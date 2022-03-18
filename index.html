@@ -37,7 +37,6 @@
                     // context.fillText(`y: ${rect.y}, h: ${rect.height}`, rect.x + rect.width + 10, rect.y + 20 )
                 })
             })
-            tracking.track('#video', eye, {camera: true})
             eye.on('track', event => {
                 console.log(event)
                 context.clearRect(0,0,canvas.width, canvas.height)
