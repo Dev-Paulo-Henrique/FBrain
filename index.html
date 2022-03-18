@@ -13,8 +13,10 @@
     </style>
 </head>
 <body>
-    <video id="video" width="320" height="240" style="filter: grayscale(100%);" autoplay preload loop muted></video>
+    <video id="video" width="320" height="240" autoplay preload loop muted></video>
+    <!-- style="filter: grayscale(100%);" -->
     <canvas id="canvas" width="320" height="240"></canvas>
+    <img id="photoPreview"/>
     <script src="tracking-min.js"></script>
     <script src="data/face-min.js"></script>
     <script>
@@ -25,15 +27,37 @@
             const tracker = new tracking.ObjectTracker('face')
             tracking.track('#video', tracker, {camera: true})
             tracker.on('track', event => {
-                console.log(event)
+                // console.log(event)
                 context.clearRect(0,0,canvas.width, canvas.height)
                 event.data.forEach(rect => {
-                    console.log(rect)
+                    // console.log(rect)
                     context.strokeStyle = '#ff0000'
                     context.lineWidth = 2
                     context.strokeRect(rect.x, rect.y, rect.width, rect.height)
-                    // context.fillText(`x: ${rect.x}, w: ${rect.width}`, rect.x + rect.width + 10, rect.y + 10 )
-                    // context.fillText(`y: ${rect.y}, h: ${rect.height}`, rect.x + rect.width + 10, rect.y + 20 )
+                    context.fillText(`x: ${rect.x}, w: ${rect.width}`, rect.x + rect.width + 10, rect.y + 10 )
+                    context.fillText(`y: ${rect.y}, h: ${rect.height}`, rect.x + rect.width + 10, rect.y + 20 )
+                    // if(rect){
+                    //     setTimeout(() => {
+                    //         var imgCanvas = document.createElement("canvas")
+                    //         // imgContext = imgCanvas.getContext("2d");
+
+                    //         // Desenhe a imagem no canvas
+                    //         context.drawImage(rect, 0, 0, rect.width, rect.height);
+
+                    //         // Transforme o canvas em URL
+                    //         var imgAsDataURL = imgCanvas.toDataURL("image/png");
+
+                    //         // Salve
+                    //         try {
+                    //         localStorage.setItem("react", imgAsDataURL);
+                    //         }
+                    //         catch (e) {
+                    //         console.log("Storage failed: " + e);
+                    //         } 
+                    //     // console.log(rect)
+                    //     }, 3000)
+                    // }
+                    setTimeout(() => { alert('rosto encontrado') }, 2000)
                 })
             })
         }
