@@ -33,8 +33,8 @@
                     context.strokeStyle = '#ff0000'
                     context.lineWidth = 2
                     context.strokeRect(rect.x, rect.y, rect.width, rect.height)
-                    context.fillText(`x: ${rect.x}, w: ${rect.width}`, rect.x + rect.width + 10, rect.y + 10 )
-                    context.fillText(`y: ${rect.y}, h: ${rect.height}`, rect.x + rect.width + 10, rect.y + 20 )
+                    // context.fillText(`x: ${rect.x}, w: ${rect.width}`, rect.x + rect.width + 10, rect.y + 10 )
+                    // context.fillText(`y: ${rect.y}, h: ${rect.height}`, rect.x + rect.width + 10, rect.y + 20 )
                 })
             })
             tracking.track('#video', eye, {camera: true})
@@ -46,7 +46,6 @@
                     context.strokeStyle = '#ff0000'
                     context.lineWidth = 2
                     context.strokeRect(rect.x, rect.y, rect.width, rect.height)
-                    // context.fillText('x: ' + rect.x + 'y: ' + rect.y)
                 })
             })
 
