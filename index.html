@@ -14,16 +14,13 @@
 </head>
 <body>
     <video id="video" width="320" height="240" style="filter: grayscale(100%);" autoplay preload loop muted></video>
-    <canvas id="canvas" width="320" height="240"></canvas>
-    <canvas id="eyes" width="320" height="240"></canvas>
+    <canvas id="canvas" width="160" height="120"></canvas>
     <script src="tracking-min.js"></script>
     <script src="data/face-min.js"></script>
-    <script src="data/eye-min.js"></script>
     <script>
         function init(){
             const video = document.getElementById('video')
             const canvas = document.getElementById('canvas')
-            const eyes = document.getElementById('eyes')
             const context = canvas.getContext('2d')
             const tracker = new tracking.ObjectTracker('face')
             const eye = new tracking.ObjectTracker('eye')
@@ -40,17 +37,6 @@
                     // context.fillText(`y: ${rect.y}, h: ${rect.height}`, rect.x + rect.width + 10, rect.y + 20 )
                 })
             })
-            eye.on('track', event => {
-                console.log(event)
-                context.clearRect(0,0,eyes.width, eyes.height)
-                event.data.forEach(rect => {
-                    console.log(rect)
-                    context.strokeStyle = '#ff0000'
-                    context.lineWidth = 2
-                    context.strokeRect(rect.x, rect.y, rect.width, rect.height)
-                })
-            })
-
         }
         window.onload = init()
     </script>
