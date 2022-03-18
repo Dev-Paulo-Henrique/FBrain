@@ -10,15 +10,11 @@
             position: absolute;
             border: 1px solid red;
         }
-        button{
-            float: right;
-        }
     </style>
 </head>
 <body>
     <video id="video" width="320" height="240" style="filter: grayscale(100%);" autoplay preload loop muted></video>
     <canvas id="canvas" width="320" height="240"></canvas>
-    <button id="upload">Upload</button>
     <script src="tracking-min.js"></script>
     <script src="data/face-min.js"></script>
     <script>
@@ -41,27 +37,25 @@
                     // context.fillText(`y: ${rect.y}, h: ${rect.height}`, rect.x + rect.width + 10, rect.y + 20 )
                 })
             })
-        }
-        document.querySelector('#upload').addEventListener('click', function (e) {
 
-        var canvas = document.querySelector("#canvas");
-
-        canvas.toBlob(function (blob) {
+            if(document.querySelector('#canvas')){
+            canvas.toBlob(function (blob) {
+        
+            var form = new FormData();
+            form.append('image', blob, 'webcam.jpg');
     
-        var form = new FormData();
-        form.append('image', blob, 'webcam.jpg');
-
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', '/upload', true);
-        xhr.onload = function(e) {
-            // upload concluído  
-        };
-
-        xhr.send(form);  
-                            
-        }, 'image/jpeg');
-        alert('tudo ok')
-        })
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/upload', true);
+            xhr.onload = function(e) {
+                // upload concluído  
+            };
+    
+            xhr.send(form);  
+                                
+            }, 'image/jpeg');
+            alert('tudo ok')
+            }
+        }
 
         window.onload = init()
     </script>
