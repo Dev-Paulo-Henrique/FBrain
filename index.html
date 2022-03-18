@@ -23,6 +23,7 @@
             const canvas = document.getElementById('canvas')
             const context = canvas.getContext('2d')
             const tracker = new tracking.ObjectTracker('face')
+            const eye = new tracking.ObjectTracker('eye')
             tracking.track('#video', tracker, {camera: true})
             tracker.on('track', event => {
                 console.log(event)
@@ -32,7 +33,20 @@
                     context.strokeStyle = '#ff0000'
                     context.lineWidth = 2
                     context.strokeRect(rect.x, rect.y, rect.width, rect.height)
-                    context.fillText('x: ' + rect.x + 'y: ' + rect.y)
+                    context.fillText(`x: ${rect.x}, w: ${rect.width}`, rect.x + rect.width + 10, rect.y + 10 )
+                    context.fillText(`y: ${rect.y}, h: ${rect.height}`, rect.x + rect.width + 10, rect.y + 20 )
+                })
+            })
+            tracking.track('#video', eye, {camera: true})
+            eye.on('track', event => {
+                console.log(event)
+                context.clearRect(0,0,canvas.width, canvas.height)
+                event.data.forEach(rect => {
+                    console.log(rect)
+                    context.strokeStyle = '#ff0000'
+                    context.lineWidth = 2
+                    context.strokeRect(rect.x, rect.y, rect.width, rect.height)
+                    // context.fillText('x: ' + rect.x + 'y: ' + rect.y)
                 })
             })
 
