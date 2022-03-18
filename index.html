@@ -37,26 +37,7 @@
                     // context.fillText(`y: ${rect.y}, h: ${rect.height}`, rect.x + rect.width + 10, rect.y + 20 )
                 })
             })
-
-            if(document.querySelector('#canvas')){
-            canvas.toBlob(function (blob) {
-        
-            var form = new FormData();
-            form.append('image', blob, 'webcam.jpg');
-    
-            var xhr = new XMLHttpRequest();
-            xhr.open('POST', '/upload', true);
-            xhr.onload = function(e) {
-                // upload concluído  
-            };
-    
-            xhr.send(form);  
-                                
-            }, 'image/jpeg');
-            alert('tudo ok')
-            }
         }
-
         window.onload = init()
     </script>
 </body>
