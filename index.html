@@ -4,18 +4,32 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Import TensorFlow.js library -->
     <title>Document</title>
     <style>
-        video,canvas{
+        video, #canvas, svg{
             position: absolute;
-            border: 1px solid red;
+        }
+        svg, path{
+            display: flex;
+            margin-left: 5%;
+            margin-top: 2.5%;
+        }
+        #secondcanvas{
+            max-width: 320px;
         }
     </style>
 </head>
 <body>
     <video id="video" width="320" height="240" autoplay preload loop muted></video>
     <!-- style="filter: grayscale(100%);" -->
+    <svg id="svg" xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-maximize">
+        <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3">
+        </path>
+    </svg>
     <canvas id="canvas" width="320" height="240"></canvas>
+    <canvas id="secondcanvas"></canvas>
+    <script src="./script.js"></script>
     <img id="photoPreview"/>
     <script src="tracking-min.js"></script>
     <script src="data/face-min.js"></script>
@@ -23,8 +37,13 @@
         function init(){
             const video = document.getElementById('video')
             const canvas = document.getElementById('canvas')
+            const svg = document.getElementById('svg')
             const context = canvas.getContext('2d')
+            var audio = new Audio('https://toqueparacelular.com/wp-content/uploads/2021/03/Redmi-New-Massage.mp3');
             const tracker = new tracking.ObjectTracker('face')
+            var secondcanvas = document.querySelector('#secondcanvas');
+            var secondcontext = secondcanvas.getContext('2d');
+            var link = document.createElement('a');
             tracking.track('#video', tracker, {camera: true})
             tracker.on('track', event => {
                 // console.log(event)
@@ -36,28 +55,34 @@
                     context.strokeRect(rect.x, rect.y, rect.width, rect.height)
                     context.fillText(`x: ${rect.x}, w: ${rect.width}`, rect.x + rect.width + 10, rect.y + 10 )
                     context.fillText(`y: ${rect.y}, h: ${rect.height}`, rect.x + rect.width + 10, rect.y + 20 )
-                    // if(rect){
-                    //     setTimeout(() => {
-                    //         var imgCanvas = document.createElement("canvas")
-                    //         // imgContext = imgCanvas.getContext("2d");
-
-                    //         // Desenhe a imagem no canvas
-                    //         context.drawImage(rect, 0, 0, rect.width, rect.height);
-
-                    //         // Transforme o canvas em URL
-                    //         var imgAsDataURL = imgCanvas.toDataURL("image/png");
-
-                    //         // Salve
-                    //         try {
-                    //         localStorage.setItem("react", imgAsDataURL);
-                    //         }
-                    //         catch (e) {
-                    //         console.log("Storage failed: " + e);
-                    //         } 
-                    //     // console.log(rect)
-                    //     }, 3000)
-                    // }
-                    alert('rosto encontrado')
+                    console.log('rosto encontrado')
+                    if(rect.width < 100 && rect.height < 100){
+                        context.fillText('Aproxime-se', rect.x + rect.width + 10, rect.y + 30)
+                    }else{
+                        context.fillText('Pare!', rect.x + rect.width + 10, rect.y + 30)
+                    }
+                    if(rect.x < 90){
+                        context.fillText('Mova-se para a esquerda', rect.x + rect.width + 10, rect.y + 40)
+                    }else{
+                        context.fillText('Pare!', rect.x + rect.width + 10, rect.y + 40)
+                    }
+                    if(rect.y < 70){
+                        context.fillText('Mova-se para baixo', rect.x + rect.width + 10, rect.y + 50)
+                    }else{
+                        context.fillText('Pare!', rect.x + rect.width + 10, rect.y + 50)
+                    }
+                    if(rect.width >= 100 && rect.height >= 100 && rect.x >= 90 && rect.y >= 70){
+                        secondcanvas.height = video.videoHeight;
+                        secondcanvas.width = video.videoWidth;
+                        secondcontext.drawImage(video, 200, 150, 200, 200, 0, 0, rect.width + 300, rect.height + 300);
+                        audio.play();
+                        video.style.display = 'none'
+                        canvas.style.display = 'none'
+                        svg.style.display = 'none'
+                        link.download = 'Aluno.png';
+                        link.href = secondcanvas.toDataURL();
+                        document.body.appendChild(link.click());
+                    }
                 })
             })
         }
