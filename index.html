@@ -23,10 +23,10 @@
 <body>
     <video id="video" width="320" height="240" autoplay preload loop muted></video>
     <!-- style="filter: grayscale(100%);" -->
-    <svg id="svg" xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-maximize">
+    <!--<svg id="svg" xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-maximize">
         <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3">
         </path>
-    </svg>
+    </svg>-->
     <canvas id="canvas" width="320" height="240"></canvas>
     <canvas id="secondcanvas"></canvas>
     <script src="./script.js"></script>
@@ -74,7 +74,7 @@
                     if(rect.width >= 100 && rect.height >= 100 && rect.x >= 90 && rect.y >= 70){
                         secondcanvas.height = video.videoHeight;
                         secondcanvas.width = video.videoWidth;
-                        secondcontext.drawImage(video, 200, 150, 200, 200, 0, 0, rect.width + 300, rect.height + 300);
+                        secondcontext.drawImage(video, 0, 0);
                         audio.play();
                         video.style.display = 'none'
                         canvas.style.display = 'none'
