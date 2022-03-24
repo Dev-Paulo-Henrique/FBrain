@@ -4,22 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- Import TensorFlow.js library -->
-    <!-- <link rel="icon" type="image/x-icon" href="chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/images/logo/metamask-fox.svg"> -->
     <title>Scanner</title>
-    <style>
-      video,
-      #canvas,
-      svg {
-        position: absolute;
-      }
-      svg,
-      path {
-        display: flex;
-        margin-left: 7%;
-        margin-top: 4%;
-      }
-    </style>
   </head>
   <body>
     <video
@@ -31,80 +16,59 @@
       loop
       muted
     ></video>
-    <!-- style="filter: grayscale(100%);" -->
-    <canvas id="canvas" width="160" height="120"></canvas>
-    <canvas id="secondcanvas" width="100%" height="100%"></canvas>
-    <!-- <script src="instascan.min.js"></script> -->
+    <ul id="messages"></ul>
     <script
       type="text/javascript"
       src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"
     ></script>
-    <script src="tracking-min.js"></script>
-    <script src="data/face-min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 
-    <script>
-      function init() {
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.9/firebase-app.js";
+        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/9.6.9/firebase-database.js";
+        const firebaseConfig = {
+          apiKey: "AIzaSyC-95CGASDakQ4u6lo4cegLMoKc878zVsQ",
+          authDomain: "notification-37963.firebaseapp.com",
+          databaseURL: "https://notification-37963-default-rtdb.firebaseio.com",
+          projectId: "notification-37963",
+          storageBucket: "notification-37963.appspot.com",
+          messagingSenderId: "436853802203",
+          appId: "1:436853802203:web:f048b9bdb4998c75eeb8fe",
+          measurementId: "G-7GJPQCG664"
+        };
+      
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase();
+        function init() {
+        const list = document.getElementById('list')
         const video = document.getElementById("video");
-        const canvas = document.getElementById("canvas");
-        const context = canvas.getContext("2d");
+        var html = ""
         var audio = new Audio(
           "https://toqueparacelular.com/wp-content/uploads/2021/03/Redmi-New-Massage.mp3"
         );
-        const tracker = new tracking.ObjectTracker("face");
-        var secondcanvas = document.querySelector("#secondcanvas");
-        var secondcontext = secondcanvas.getContext("2d");
-        var link = document.createElement("a");
         const scanner = new Instascan.Scanner({ video: video });
-
-        tracking.track("#video", tracker, { camera: true });
-        tracker.on("track", (event) => {
-          context.clearRect(0, 0, canvas.width, canvas.height);
-          event.data.forEach((rect) => {
-            context.strokeStyle = "#ff0000";
-            context.lineWidth = 2;
-            context.strokeRect(rect.x, rect.y, rect.width, rect.height);
-            context.fillText(
-              `x: ${rect.x}, w: ${rect.width}`,
-              rect.x + rect.width + 10,
-              rect.y + 10
-            );
-            context.fillText(
-              `y: ${rect.y}, h: ${rect.height}`,
-              rect.x + rect.width + 10,
-              rect.y + 20
-            );
-            if (rect.width < 50 && rect.height < 50) {
-              context.fillText(
-                "Aproxime-se",
-                rect.x + rect.width + 10,
-                rect.y + 30
-              );
-            }
-            if (rect.width >= 50 && rect.height >= 50) {
-              secondcanvas.height = video.videoHeight;
-              secondcanvas.width = video.videoWidth;
-              secondcontext.drawImage(video, 0, 0);
-              audio.play();
-              canvas.style.display = "none";
-              link.download = "Aluno.png";
-              link.href = secondcanvas.toDataURL();
-              sessionStorage.setItem("QR Code", true);
-              if (sessionStorage.getItem("QR Code")) {
-                Instascan.Camera.getCameras().then((cameras) => {
+        Instascan.Camera.getCameras().then((cameras) => {
                   scanner.addListener("scan", (content) => {
-                    window.open(content, "_blank");
-                    video.style.display = "none";
+                    const name = JSON.parse(content)
+                    const finallyName = name.name
+                    set(ref(database, 'users/' + '1B/' + finallyName), JSON.parse(content));
+                    const starCountRef = ref(database, 'users/' + '1B/' + finallyName);
+                      onValue(starCountRef, (snapshot) => {
+                        const dataName = snapshot.val().name;
+                        const dataDate = snapshot.val().date;
+                        if(dataDate === new Intl.DateTimeFormat('pt-BR', {day: "2-digit", month: "2-digit", year: "numeric"}).format(new Date())){
+                          document.getElementById("messages").innerHTML += "<li>" + `${JSON.stringify(dataName).replace(/[-""]+/g, "")}` + "</li>";
+                          audio.play();
+                        }else{
+                          console.error(ErrorEvent)
+                          alert('Atualize seus dados.')
+                        }
+    });
                   });
                   if (cameras.length > 0) {
                     scanner.start(cameras[0]);
-                    console.log(cameras[0]);
                   }
                 });
-              }
-              document.body.appendChild(link.click());
-            }
-          });
-        });
       }
       window.onload = init();
     </script>
