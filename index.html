@@ -11,15 +11,13 @@
 <body>
     <button type="button" id="btn">Login</button>
     <img class="qr-code" hidden id="qrcode"/>
-    </div>
-    <script src=
-      "https://code.jquery.com/jquery-3.5.1.js">
-    </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.9/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.9/firebase-analytics.js";
         import { GoogleAuthProvider, getAuth, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.6.9/firebase-auth.js";
+        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.6.9/firebase-database.js";
         const firebaseConfig = {
           apiKey: "AIzaSyC-95CGASDakQ4u6lo4cegLMoKc878zVsQ",
           authDomain: "notification-37963.firebaseapp.com",
@@ -35,21 +33,42 @@
         const analytics = getAnalytics(app);
         const provider = new GoogleAuthProvider();
         const auth = getAuth();
+        const database = getDatabase();
+        console.log(database)
         const btn = document.getElementById('btn')
         const generate = document.getElementById('generate')
         const qrcode = document.getElementById('qrcode')
+        if(localStorage.getItem('date') === new Intl.DateTimeFormat('pt-BR', {day: "2-digit", month: "2-digit", year: "numeric"}).format(new Date()).toString()){
+          if(!localStorage.getItem('qr_code_date')){
+          localStorage.clear()
+          window.location.reload()
+        }
+          const copyURL = localStorage.getItem('qr_code_date')
+          qrcode.hidden = false
+          btn.hidden = true
+          $('.qr-code').attr('src', copyURL );
+        }else{
 btn.addEventListener('click', () => {
   signInWithPopup(auth, provider)
   .then((result) => {
     const credential = GoogleAuthProvider.credentialFromResult(result);
     const token = credential.accessToken;
     const user = result.user;
+    function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
     if(user.email.split('@')[1] === 'educacao.org.br'){
-    btn.style.display = 'none'
-    let finalURL =
-  'https://chart.googleapis.com/chart?cht=qr&chl=' +
-            user.email.split('@')[0] +
-            '&chs=160x160&chld=L|0'
+      localStorage.setItem('date', new Intl.DateTimeFormat('pt-BR', {day: "2-digit", month: "2-digit", year: "numeric"}).format(new Date()))
+      btn.hidden = true
+      const setNameInDatabase = user.displayName
+      let getInfo = JSON.stringify({
+        name: user.displayName,
+        email: user.email,
+        permission: true,
+        date: new Intl.DateTimeFormat('pt-BR', {day: "2-digit", month: "2-digit", year: "numeric"}).format(new Date())
+      })
+      let finalURL = 'https://chart.googleapis.com/chart?cht=qr&chl=' + getInfo + '&chs=160x160&chld=L|0'
+      localStorage.setItem('qr_code_date', finalURL)
             qrcode.hidden = false
           $('.qr-code').attr('src', finalURL);
     }
@@ -59,7 +78,7 @@ btn.addEventListener('click', () => {
     const email = error.email;
     const credential = GoogleAuthProvider.credentialFromError(error);
   });
-})
+})}
       </script>
 </body>
 </html>
