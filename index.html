@@ -4,13 +4,69 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg" type="image/x-icon" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.15.1/devicon.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script&family=Roboto:ital@1&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/ui/6.0.1/firebase-ui-auth.js"></script>
 <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/6.0.1/firebase-ui-auth.css" />
-    <title>Login</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital@1&display=swap" rel="stylesheet">
+    <title>Sign In</title>
+    <style>
+      body{
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        background: white;
+        font-family: 'Roboto', sans-serif;
+      }
+      body::-webkit-scrollbar {
+  width: 5px;
+  margin-right: 5px;
+}
+
+body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: #ea4335;
+  border-radius: 20px;
+}
+p{
+  font-family: 'Dancing Script', cursive;
+  font-weight: bold;
+  font-size: larger;
+}
+      button{
+        background: #ea4335;
+        border: none;
+        color: white;
+        font-weight: bold;
+        padding: 2%;
+        font-size: medium;
+        border-radius: 50%;
+        cursor: pointer;
+      }
+      img{
+        border: 2px solid black;
+        border-radius: 5%;
+        margin-bottom: 5px;
+      }
+    </style>
 </head>
 <body>
-    <button type="button" id="btn">Login</button>
+    <button type="button" id="btn">
+      <i class="devicon-google-plain"></i>
+    </button>
+    <p>FBrain</p>
     <img class="qr-code" hidden id="qrcode"/>
+    <b id="scanner" hidden>Scanner</b>
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     
     <script type="module">
@@ -36,6 +92,7 @@
         const database = getDatabase();
         console.log(database)
         const btn = document.getElementById('btn')
+        const scanner = document.getElementById('scanner')
         const generate = document.getElementById('generate')
         const qrcode = document.getElementById('qrcode')
         if(localStorage.getItem('date') === new Intl.DateTimeFormat('pt-BR', {day: "2-digit", month: "2-digit", year: "numeric"}).format(new Date()).toString()){
@@ -45,6 +102,7 @@
         }
           const copyURL = localStorage.getItem('qr_code_date')
           qrcode.hidden = false
+          scanner.hidden = false
           btn.hidden = true
           $('.qr-code').attr('src', copyURL );
         }else{
@@ -54,12 +112,11 @@ btn.addEventListener('click', () => {
     const credential = GoogleAuthProvider.credentialFromResult(result);
     const token = credential.accessToken;
     const user = result.user;
-    function capitalizeFirstLetter(string) {
-  return string.charAt(0).toUpperCase() + string.slice(1);
-}
+  
     if(user.email.split('@')[1] === 'educacao.org.br'){
       localStorage.setItem('date', new Intl.DateTimeFormat('pt-BR', {day: "2-digit", month: "2-digit", year: "numeric"}).format(new Date()))
       btn.hidden = true
+      scanner.hidden = false
       const setNameInDatabase = user.displayName
       let getInfo = JSON.stringify({
         name: user.displayName,

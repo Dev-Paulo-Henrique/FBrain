@@ -3,8 +3,22 @@
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital@1&display=swap" rel="stylesheet">
+    <link rel="icon" href="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg" type="image/x-icon" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Scanner</title>
+    <style>
+      body{
+        display: flex;
+        font-family: 'Roboto', sans-serif;
+      }
+      li{
+        list-style: none;
+      }
+    </style>
   </head>
   <body>
     <video
@@ -16,7 +30,8 @@
       loop
       muted
     ></video>
-    <ul id="messages"></ul>
+    <ul id="messages">
+    </ul>
     <script
       type="text/javascript"
       src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"
@@ -58,6 +73,13 @@
                         const dataDate = snapshot.val().date;
                         if(dataDate === new Intl.DateTimeFormat('pt-BR', {day: "2-digit", month: "2-digit", year: "numeric"}).format(new Date())){
                           document.getElementById("messages").innerHTML += "<li>" + `${JSON.stringify(dataName).replace(/[-""]+/g, "")}` + "</li>";
+                          Swal.fire({
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Novo registro',
+                            showConfirmButton: false,
+                            timer: 1500
+                          })
                           audio.play();
                         }else{
                           console.error(ErrorEvent)
