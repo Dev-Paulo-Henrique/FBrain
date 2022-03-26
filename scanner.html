@@ -87,13 +87,16 @@
             onValue(starCountRef, (snapshot) => {
               const dataName = snapshot.val().name;
               const dataDate = snapshot.val().date;
+              const dataPermission = snapshot.val().permission;
               if (
-                dataDate ===
-                new Intl.DateTimeFormat("pt-BR", {
-                  day: "2-digit",
-                  month: "2-digit",
-                  year: "numeric",
-                }).format(new Date())
+                (dataDate ===
+                  new Intl.DateTimeFormat("pt-BR", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                  }).format(new Date()) &&
+                  dataPermission === false) ||
+                dataPermission === true
               ) {
                 document.getElementById("messages").innerHTML +=
                   "<li>" +

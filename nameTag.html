@@ -31,7 +31,7 @@
       rel="stylesheet"
     />
     <script src="https://www.gstatic.com/firebasejs/ui/6.0.1/firebase-ui-auth.js"></script>
-    <title>Sign In</title>
+    <title>GNT | get name tag</title>
     <style>
       body {
         height: 100vh;
@@ -109,74 +109,39 @@
       const auth = getAuth();
       const btn = document.getElementById("btn");
       const scanner = document.getElementById("scanner");
+      const generate = document.getElementById("generate");
       const qrcode = document.getElementById("qrcode");
-      if (
-        localStorage.getItem("date") ===
-        new Intl.DateTimeFormat("pt-BR", {
-          day: "2-digit",
-          month: "2-digit",
-          year: "numeric",
-        })
-          .format(new Date())
-          .toString()
-      ) {
-        if (!localStorage.getItem("qr_code_date")) {
-          localStorage.clear();
-          window.location.reload();
-        }
-        const copyURL = localStorage.getItem("qr_code_date");
-        qrcode.hidden = false;
-        scanner.hidden = false;
-        btn.hidden = true;
-        $(".qr-code").attr("src", copyURL);
-      } else {
-        btn.addEventListener("click", () => {
-          signInWithPopup(auth, provider)
-            .then((result) => {
-              const credential =
-                GoogleAuthProvider.credentialFromResult(result);
-              const token = credential.accessToken;
-              const user = result.user;
+      btn.addEventListener("click", () => {
+        signInWithPopup(auth, provider)
+          .then((result) => {
+            const credential = GoogleAuthProvider.credentialFromResult(result);
+            const token = credential.accessToken;
+            const user = result.user;
 
-              if (user.email.split("@")[1] === "educacao.org.br") {
-                localStorage.setItem(
-                  "date",
-                  new Intl.DateTimeFormat("pt-BR", {
-                    day: "2-digit",
-                    month: "2-digit",
-                    year: "numeric",
-                  }).format(new Date())
-                );
-                btn.hidden = true;
-                scanner.hidden = false;
-                const setNameInDatabase = user.displayName;
-                let getInfo = JSON.stringify({
-                  name: user.displayName,
-                  email: user.email,
-                  permission: false,
-                  date: new Intl.DateTimeFormat("pt-BR", {
-                    day: "2-digit",
-                    month: "2-digit",
-                    year: "numeric",
-                  }).format(new Date()),
-                });
-                let finalURL =
-                  "https://chart.googleapis.com/chart?cht=qr&chl=" +
-                  getInfo +
-                  "&chs=160x160&chld=L|0";
-                localStorage.setItem("qr_code_date", finalURL);
-                qrcode.hidden = false;
-                $(".qr-code").attr("src", finalURL);
-              }
-            })
-            .catch((error) => {
-              const errorCode = error.code;
-              const errorMessage = error.message;
-              const email = error.email;
-              const credential = GoogleAuthProvider.credentialFromError(error);
-            });
-        });
-      }
+            if (user.email.split("@")[1] === "educacao.org.br") {
+              btn.hidden = true;
+              scanner.hidden = false;
+              const setNameInDatabase = user.displayName;
+              let getInfo = JSON.stringify({
+                name: user.displayName,
+                email: user.email,
+                permission: true,
+              });
+              let finalURL =
+                "https://chart.googleapis.com/chart?cht=qr&chl=" +
+                getInfo +
+                "&chs=160x160&chld=L|0";
+              qrcode.hidden = false;
+              $(".qr-code").attr("src", finalURL);
+            }
+          })
+          .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            const email = error.email;
+            const credential = GoogleAuthProvider.credentialFromError(error);
+          });
+      });
     </script>
   </body>
 </html>
