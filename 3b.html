@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:ital@1&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="icon"
+      href="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg"
+      type="image/x-icon"
+    />
+    <title>Turma 3ºB</title>
+    <style>
+        body {
+        font-family: "Roboto", sans-serif;
+      }
+      li {
+        margin: 0 0 5px 0;
+      }
+    </style>
+</head>
+<body>
+
+    <!-- Listagem de faltas -->
+
+    <h1>Faltas 3B hoje</h1>
+    <p>Alunos</p>
+
+    <!-- Scripts -->
+
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.9/firebase-app.js";
+      import {
+        getDatabase,
+        ref,
+        set,
+        onValue,
+      } from "https://www.gstatic.com/firebasejs/9.6.9/firebase-database.js";
+      const firebaseConfig = {
+        apiKey: "AIzaSyC-95CGASDakQ4u6lo4cegLMoKc878zVsQ",
+        authDomain: "notification-37963.firebaseapp.com",
+        databaseURL: "https://notification-37963-default-rtdb.firebaseio.com",
+        projectId: "notification-37963",
+        storageBucket: "notification-37963.appspot.com",
+        messagingSenderId: "436853802203",
+        appId: "1:436853802203:web:f048b9bdb4998c75eeb8fe",
+        measurementId: "G-7GJPQCG664",
+      };
+        
+
+      const app = initializeApp(firebaseConfig);
+      const database = getDatabase();
+      const starCountRef = ref(database, "users/" + "3b/" + "Alunos/" + "faltas")
+
+      // Leitura dos dados do banco de dados
+
+      onValue(starCountRef, (snapshot) => {
+              $('p').html(snapshot.val())
+      })
+    </script>
+</body>
+</html>

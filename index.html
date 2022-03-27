@@ -78,12 +78,17 @@
     </style>
   </head>
   <body>
+    <!-- QR CODE -->
+
     <button type="button" id="btn">
       <i class="devicon-google-plain"></i>
     </button>
     <p>FBrain</p>
-    <img class="qr-code" hidden id="qrcode" />
+    <img class="qr-code" hidden id="qrcode" alt="qrcode" />
     <b id="scanner" hidden>Scanner</b>
+
+    <!-- Scripts -->
+
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 
     <script type="module">
@@ -104,12 +109,17 @@
         measurementId: "G-7GJPQCG664",
       };
 
+      // Iniciando valores para as constantes
+
       const app = initializeApp(firebaseConfig);
       const provider = new GoogleAuthProvider();
       const auth = getAuth();
       const btn = document.getElementById("btn");
       const scanner = document.getElementById("scanner");
       const qrcode = document.getElementById("qrcode");
+
+      // Resgatando valores
+
       if (
         localStorage.getItem("date") ===
         new Intl.DateTimeFormat("pt-BR", {
@@ -120,6 +130,8 @@
           .format(new Date())
           .toString()
       ) {
+        // Deletar por falta de informações
+
         if (!localStorage.getItem("qr_code_date")) {
           localStorage.clear();
           window.location.reload();
@@ -130,6 +142,8 @@
         btn.hidden = true;
         $(".qr-code").attr("src", copyURL);
       } else {
+        // Login
+
         btn.addEventListener("click", () => {
           signInWithPopup(auth, provider)
             .then((result) => {
@@ -137,6 +151,8 @@
                 GoogleAuthProvider.credentialFromResult(result);
               const token = credential.accessToken;
               const user = result.user;
+
+              // Verificação
 
               if (user.email.split("@")[1] === "educacao.org.br") {
                 localStorage.setItem(
@@ -170,6 +186,8 @@
               }
             })
             .catch((error) => {
+              // Logs de erro
+
               const errorCode = error.code;
               const errorMessage = error.message;
               const email = error.email;

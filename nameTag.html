@@ -78,12 +78,17 @@
     </style>
   </head>
   <body>
+    <!-- QR CODE nameTag -->
+
     <button type="button" id="btn">
       <i class="devicon-google-plain"></i>
     </button>
     <p id="titulo">FBrain</p>
-    <img class="qr-code" hidden id="qrcode" alt="qrcode" width="160px" height="160px"/>
+    <img class="qr-code" hidden id="qrcode" alt="qrcode" />
     <b id="scanner" hidden>Print Out</b>
+
+    <!-- Scripts -->
+
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 
     <script type="module">
@@ -104,6 +109,8 @@
         measurementId: "G-7GJPQCG664",
       };
 
+      // Iniciando valores para as constantes
+
       const app = initializeApp(firebaseConfig);
       const provider = new GoogleAuthProvider();
       const auth = getAuth();
@@ -111,12 +118,17 @@
       const scanner = document.getElementById("scanner");
       const generate = document.getElementById("generate");
       const qrcode = document.getElementById("qrcode");
+
+      // Login
+
       btn.addEventListener("click", () => {
         signInWithPopup(auth, provider)
           .then((result) => {
             const credential = GoogleAuthProvider.credentialFromResult(result);
             const token = credential.accessToken;
             const user = result.user;
+
+            // Verificação
 
             if (user.email.split("@")[1] === "educacao.org.br") {
               btn.hidden = true;
@@ -136,6 +148,8 @@
             }
           })
           .catch((error) => {
+            // Logs de erro
+
             const errorCode = error.code;
             const errorMessage = error.message;
             const email = error.email;

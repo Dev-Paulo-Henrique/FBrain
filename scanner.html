@@ -21,23 +21,35 @@
       body {
         display: flex;
         font-family: "Roboto", sans-serif;
+        flex-direction: column;
+      }
+      button {
+        width: 160px;
+        height: 30px;
+        background: red;
+        color: white;
+        font-weight: bold;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
       }
       li {
-        /* list-style: none; */
         margin: 0 0 5px 0;
       }
-      .falta{
-        color: red
+      .falta {
+        color: red;
       }
-      .presente{
-        color: green
+      .presente {
+        color: green;
       }
-      ul {
-        padding-left: 10px;
+      ol {
+        margin-left: -20px;
       }
     </style>
   </head>
   <body>
+    <!-- Leitor de QR CODE -->
+
     <video
       id="video"
       width="160"
@@ -47,7 +59,15 @@
       loop
       muted
     ></video>
+
+    <!-- Enviar para o professor -->
+
+    <button id="finish">Finalizar</button>
+
     <!-- Simulação da API  -->
+
+    <!-- Listagem de alunos 3B -->
+
     <ol id="messages">
       <li class="falta">ABNER FERREIRA DE OLIVEIRA</li>
       <li class="falta">ALINE DA SILVA LINS</li>
@@ -87,12 +107,16 @@
       <li class="falta">VINICIUS KAUAN SILVA SANTOS</li>
       <li class="falta">YASMIM CAVALCANTE DA SILVA</li>
     </ol>
+
+    <!-- Scripts  -->
+
     <script
       type="text/javascript"
       src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"
     ></script>
+
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-    
+
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.9/firebase-app.js";
       import {
@@ -111,30 +135,65 @@
         appId: "1:436853802203:web:f048b9bdb4998c75eeb8fe",
         measurementId: "G-7GJPQCG664",
       };
-        
 
       const app = initializeApp(firebaseConfig);
       const database = getDatabase();
-      
+
       function init() {
+        // Enviar dados
+
+        $("#finish").click(() => {
+          $(document).ready(function () {
+            console.log($(".falta").text());
+            $(".presente").hide();
+            const falta = $("ol").html();
+            set(ref(database, "users/" + "3b/" + "Alunos/"), { faltas: falta });
+
+            // Bem sucedido
+
+            Swal.fire({
+              position: "center",
+              icon: "success",
+              title: "Salvo",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+
+            setTimeout(() => {
+              window.close();
+            }, 2000);
+          });
+        });
         const video = document.getElementById("video");
         var audio = new Audio(
           "https://toqueparacelular.com/wp-content/uploads/2021/03/Redmi-New-Massage.mp3"
         );
         const scanner = new Instascan.Scanner({ video: video });
+
+        // Inicia leitura de QR CODE
+
         Instascan.Camera.getCameras().then((cameras) => {
           scanner.addListener("scan", (content) => {
             const name = JSON.parse(content);
             const finallyName = name.name;
+
+            // Cria dados no banco de dados
+
             set(
-              ref(database, "users/" + "1B/" + finallyName),
+              ref(database, "users/" + "3b/" + finallyName),
               JSON.parse(content)
             );
-            const starCountRef = ref(database, "users/" + "1B/" + finallyName);
+            const starCountRef = ref(database, "users/" + "3b/" + finallyName);
+
+            // Faz leitura do banco de dados
+
             onValue(starCountRef, (snapshot) => {
               const dataName = snapshot.val().name;
               const dataDate = snapshot.val().date;
               const dataPermission = snapshot.val().permission;
+
+              // Verificação
+
               if (
                 (dataDate ===
                   new Intl.DateTimeFormat("pt-BR", {
@@ -145,21 +204,24 @@
                   dataPermission === false) ||
                 dataPermission === true
               ) {
+                // Troca de classe
 
-                $(document).ready(function(){
- $('.falta').click(event => {
-  if($(event.target).text() === JSON.stringify(dataName).replace(/[-""]+/g, "")){
-  $(event.target).attr("class", "presente")
-  }
-    });
-     setTimeout(() => {
-        $('.falta').trigger('click');
-    }, 100);
-});
-                // document.getElementById("messages").innerHTML +=
-                //   "<li>" +
-                //   `${JSON.stringify(dataName).replace(/[-""]+/g, "")}` +
-                //   "</li>";
+                $(document).ready(function () {
+                  $(".falta").click((event) => {
+                    if (
+                      $(event.target).text() ===
+                      JSON.stringify(dataName).replace(/[-""]+/g, "")
+                    ) {
+                      $(event.target).attr("class", "presente");
+                    }
+                  });
+                  setTimeout(() => {
+                    $(".falta").trigger("click");
+                  }, 100);
+                });
+
+                // Bem sucedido
+
                 Swal.fire({
                   position: "top-end",
                   icon: "success",
@@ -167,8 +229,13 @@
                   showConfirmButton: false,
                   timer: 1500,
                 });
+
+                // Inicia som
+
                 audio.play();
               } else {
+                // Mal sucedido
+
                 Swal.fire({
                   position: "top-end",
                   icon: "warning",
@@ -179,11 +246,17 @@
               }
             });
           });
+
+          // Iniciar câmera
+
           if (cameras.length > 0) {
             scanner.start(cameras[0]);
           }
         });
       }
+
+      // Inicia função
+
       window.onload = init();
     </script>
   </body>
