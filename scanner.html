@@ -23,8 +23,14 @@
         font-family: "Roboto", sans-serif;
       }
       li {
-        list-style: none;
+        /* list-style: none; */
         margin: 0 0 5px 0;
+      }
+      .falta{
+        color: red
+      }
+      .presente{
+        color: green
       }
       ul {
         padding-left: 10px;
@@ -41,13 +47,52 @@
       loop
       muted
     ></video>
-    <ul id="messages"></ul>
+    <!-- Simulação da API  -->
+    <ol id="messages">
+      <li class="falta">ABNER FERREIRA DE OLIVEIRA</li>
+      <li class="falta">ALINE DA SILVA LINS</li>
+      <li class="falta">ANDRESSA RODRIGUES DE CARVALHO</li>
+      <li class="falta">ANDREZA LAÍS DOS SANTOS MARTINS</li>
+      <li class="falta">BIANKA LARYSSA OLIVEIRA DO NASCIMENTO</li>
+      <li class="falta">BRUNO FERREIRA DA COSTA</li>
+      <li class="falta">CAILLANY MARIA DA SILVA MARIANO</li>
+      <li class="falta">CARLOS MATEUS SOUSA DA SILVA</li>
+      <li class="falta">CÁSSIA MARIA KETLIN DA SILVA LIMA</li>
+      <li class="falta">DANIEL EMERSON LIMA DOS SANTOS</li>
+      <li class="falta">DANIEL WILLIAMIS PYRRHO DE LIMA</li>
+      <li class="falta">DANILO WILLIAMIS PYRRHO DE LIMA</li>
+      <li class="falta">EDUARDA KELLY ALVES DA SILVA</li>
+      <li class="falta">EDUARDA MARIA DA SILVA</li>
+      <li class="falta">EMELLY VITÓRIA SOARES DO NASCIMENTO</li>
+      <li class="falta">EMILY VITÓRIA CORREIA DA SILVA</li>
+      <li class="falta">ERICA KAROLAINY SILVA SANTIAGO</li>
+      <li class="falta">GEOVANA EVELYN DA SILVA</li>
+      <li class="falta">GEYSSA GABRIELA SANTOS SILVA</li>
+      <li class="falta">HUGO DE MESQUITA RUFINO</li>
+      <li class="falta">ISABELY VITÓRIA FERREIRA DE MELO</li>
+      <li class="falta">ITALO FABIANO GOMES DE SOUZA FARIAS</li>
+      <li class="falta">JHONNATHAN ANTONY JANUÁRIO DA SILVA</li>
+      <li class="falta">JOÃO GABRIEL GOMES DE MELO</li>
+      <li class="falta">JOSÉ CLENILSON BEZERRA DA SILVA</li>
+      <li class="falta">KAUÃ VINÍCIUS DA SILVA</li>
+      <li class="falta">LETÍCIA VITÓRIA OLIVEIRA DOS SANTOS</li>
+      <li class="falta">LUCAS FRANCELINO DE LIMA</li>
+      <li class="falta">LUIZ FILIPE SANTOS OMENA</li>
+      <li class="falta">MARIA EDUARDA AVELAR DA SILVA</li>
+      <li class="falta">MARÍLIA FHANTYNE DOS SANTOS SILVA</li>
+      <li class="falta">PAULO HENRIQUE DA SILVA SANTOS</li>
+      <li class="falta">PAULO VITOR VIEIRA</li>
+      <li class="falta">RAYSSA VITÓRIA BARBOSA DA SILVA</li>
+      <li class="falta">THIAGO DOS SANTOS SILVA</li>
+      <li class="falta">VINICIUS KAUAN SILVA SANTOS</li>
+      <li class="falta">YASMIM CAVALCANTE DA SILVA</li>
+    </ol>
     <script
       type="text/javascript"
       src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"
     ></script>
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-
+    
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.9/firebase-app.js";
       import {
@@ -66,9 +111,11 @@
         appId: "1:436853802203:web:f048b9bdb4998c75eeb8fe",
         measurementId: "G-7GJPQCG664",
       };
+        
 
       const app = initializeApp(firebaseConfig);
       const database = getDatabase();
+      
       function init() {
         const video = document.getElementById("video");
         var audio = new Audio(
@@ -98,10 +145,21 @@
                   dataPermission === false) ||
                 dataPermission === true
               ) {
-                document.getElementById("messages").innerHTML +=
-                  "<li>" +
-                  `${JSON.stringify(dataName).replace(/[-""]+/g, "")}` +
-                  "</li>";
+
+                $(document).ready(function(){
+ $('.falta').click(event => {
+  if($(event.target).text() === JSON.stringify(dataName).replace(/[-""]+/g, "")){
+  $(event.target).attr("class", "presente")
+  }
+    });
+     setTimeout(() => {
+        $('.falta').trigger('click');
+    }, 100);
+});
+                // document.getElementById("messages").innerHTML +=
+                //   "<li>" +
+                //   `${JSON.stringify(dataName).replace(/[-""]+/g, "")}` +
+                //   "</li>";
                 Swal.fire({
                   position: "top-end",
                   icon: "success",
