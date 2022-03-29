@@ -179,7 +179,7 @@
                 let finalURL =
                   "https://chart.googleapis.com/chart?cht=qr&chl=" +
                   getInfo +
-                  "&chs=160x160&chld=L|0";
+                  "&chs=320x320&chld=L|0";
                 localStorage.setItem("qr_code_date", finalURL);
                 qrcode.hidden = false;
                 $(".qr-code").attr("src", finalURL);

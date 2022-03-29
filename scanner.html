@@ -35,6 +35,7 @@
       }
       li {
         margin: 0 0 5px 0;
+        flex-basis: 50%;
       }
       .falta {
         color: red;
@@ -44,6 +45,8 @@
       }
       ol {
         margin-left: -20px;
+        display: flex;
+        flex-wrap: wrap;
       }
     </style>
   </head>
@@ -144,10 +147,16 @@
 
         $("#finish").click(() => {
           $(document).ready(function () {
-            console.log($(".falta").text());
             $(".presente").hide();
             const falta = $("ol").html();
-            set(ref(database, "users/" + "3b/" + "Alunos/"), { faltas: falta });
+            set(ref(database, "users/" + "3b/" + "Alunos/"), {
+              faltas: falta,
+              date: new Intl.DateTimeFormat("pt-BR", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+              }).format(new Date()),
+            });
 
             // Bem sucedido
 
@@ -160,7 +169,7 @@
             });
 
             setTimeout(() => {
-              window.close();
+              // window.close();
             }, 2000);
           });
         });

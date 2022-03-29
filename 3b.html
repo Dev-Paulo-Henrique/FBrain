@@ -19,6 +19,15 @@
     <style>
         body {
         font-family: "Roboto", sans-serif;
+        display: flex;
+        flex-direction: column;
+      }
+      h1{
+        display: flex;
+        justify-content: center;
+      }
+      b{
+        margin-left: 10px;
       }
       li {
         margin: 0 0 5px 0;
@@ -29,8 +38,8 @@
 
     <!-- Listagem de faltas -->
 
-    <h1>Faltas 3B hoje</h1>
-    <p>Alunos</p>
+    <h1>Faltas 3B <b></b></h1>
+    <p>Carregando...</p>
 
     <!-- Scripts -->
 
@@ -58,12 +67,20 @@
 
       const app = initializeApp(firebaseConfig);
       const database = getDatabase();
-      const starCountRef = ref(database, "users/" + "3b/" + "Alunos/" + "faltas")
+      const starCountRef = ref(database, "users/" + "3b/" + "Alunos/")
 
       // Leitura dos dados do banco de dados
 
       onValue(starCountRef, (snapshot) => {
-              $('p').html(snapshot.val())
+              $('p').html(snapshot.val().faltas)
+              $('b').html(snapshot.val().date)
+              if(snapshot.val().date !== new Intl.DateTimeFormat("pt-BR", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                  }).format(new Date())){
+                    set(ref(database, "users/" + "3b/" + "Alunos/" + "faltas/"), 'Nenhuma falta registrada')
+              }
       })
     </script>
 </body>
