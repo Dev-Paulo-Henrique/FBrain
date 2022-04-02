@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link
       rel="icon"
       href="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg"
@@ -78,16 +79,8 @@
     </style>
   </head>
   <body>
-    <!-- QR CODE -->
-
-    <button type="button" id="btn">
-      <i class="devicon-google-plain"></i>
-    </button>
-    <p>FBrain</p>
     <img class="qr-code" hidden id="qrcode" alt="qrcode" />
     <b id="scanner" hidden>Scanner</b>
-
-    <!-- Scripts -->
 
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 
@@ -109,29 +102,21 @@
         measurementId: "G-7GJPQCG664",
       };
 
-      // Iniciando valores para as constantes
-
       const app = initializeApp(firebaseConfig);
       const provider = new GoogleAuthProvider();
       const auth = getAuth();
-      const btn = document.getElementById("btn");
       const scanner = document.getElementById("scanner");
       const qrcode = document.getElementById("qrcode");
-
-      // Resgatando valores
-
-      if (
-        localStorage.getItem("date") ===
-        new Intl.DateTimeFormat("pt-BR", {
+      const formatDate = new Intl.DateTimeFormat("pt-BR", {
           day: "2-digit",
           month: "2-digit",
           year: "numeric",
         })
           .format(new Date())
-          .toString()
-      ) {
-        // Deletar por falta de informações
 
+      if (
+        localStorage.getItem("date") === formatDate.toString()
+      ) {
         if (!localStorage.getItem("qr_code_date")) {
           localStorage.clear();
           window.location.reload();
@@ -139,12 +124,8 @@
         const copyURL = localStorage.getItem("qr_code_date");
         qrcode.hidden = false;
         scanner.hidden = false;
-        btn.hidden = true;
         $(".qr-code").attr("src", copyURL);
       } else {
-        // Login
-
-        btn.addEventListener("click", () => {
           signInWithPopup(auth, provider)
             .then((result) => {
               const credential =
@@ -152,29 +133,17 @@
               const token = credential.accessToken;
               const user = result.user;
 
-              // Verificação
-
               if (user.email.split("@")[1] === "educacao.org.br") {
                 localStorage.setItem(
                   "date",
-                  new Intl.DateTimeFormat("pt-BR", {
-                    day: "2-digit",
-                    month: "2-digit",
-                    year: "numeric",
-                  }).format(new Date())
+                  formatDate
                 );
-                btn.hidden = true;
                 scanner.hidden = false;
                 const setNameInDatabase = user.displayName;
                 let getInfo = JSON.stringify({
                   name: user.displayName,
-                  email: user.email,
                   permission: false,
-                  date: new Intl.DateTimeFormat("pt-BR", {
-                    day: "2-digit",
-                    month: "2-digit",
-                    year: "numeric",
-                  }).format(new Date()),
+                  date: formatDate,
                 });
                 let finalURL =
                   "https://chart.googleapis.com/chart?cht=qr&chl=" +
@@ -183,17 +152,25 @@
                 localStorage.setItem("qr_code_date", finalURL);
                 qrcode.hidden = false;
                 $(".qr-code").attr("src", finalURL);
+              }else{
+                setTimeout(() => {
+                  window.location.reload()
+                },2000)
+                Swal.fire({
+              position: "center",
+              icon: "error",
+              title: "Use sua conta institucional",
+              showConfirmButton: false,
+              timer: 1500,
+            });
               }
             })
             .catch((error) => {
-              // Logs de erro
-
               const errorCode = error.code;
               const errorMessage = error.message;
               const email = error.email;
               const credential = GoogleAuthProvider.credentialFromError(error);
             });
-        });
       }
     </script>
   </body>
